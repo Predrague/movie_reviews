@@ -4,43 +4,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.predrague.moviereviews.data.ReviewsRepository;
-import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.util.network.NetworkConnectionUtil;
 import com.predrague.moviereviews.util.network.NetworkStateManager;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
     NetworkConnectionUtil networkConnectionUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        networkConnectionUtil = new NetworkConnectionUtil(getApplicationContext());
+        networkConnectionUtil.getInitialState();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        networkConnectionUtil = new NetworkConnectionUtil(getApplicationContext());
-        networkConnectionUtil.getInitialState();
         networkConnectionUtil.registerNetworkCallbackEvents();
-
-        ReviewsRepository repository = ReviewsRepository.getInstance();
-
-        if(Boolean.TRUE.equals(NetworkStateManager.getInstance().getNetworkConnectivityStatus().getValue())) {
-            repository.getReviews(BuildConfig.API_KEY).observe(this, new Observer<List<Review>>() {
-                @Override
-                public void onChanged(List<Review> reviews) {
-                    Log.i(TAG, "onChanged: " + reviews.toString());
-                }
-            });
-        }
 
         NetworkStateManager.getInstance().getNetworkConnectivityStatus().observe(this, new Observer<Boolean>() {
             @Override
