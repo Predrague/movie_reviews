@@ -1,4 +1,4 @@
-package com.predrague.moviereviews;
+package com.predrague.moviereviews.ui;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.predrague.moviereviews.BuildConfig;
 import com.predrague.moviereviews.data.ReviewsRepository;
 import com.predrague.moviereviews.data.model.Review;
 
