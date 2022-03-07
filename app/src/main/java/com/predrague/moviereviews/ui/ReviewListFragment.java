@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -59,8 +60,15 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
         // RecyclerView
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.rvReviewsList.setLayoutManager(linearLayoutManager);
-        ReviewListAdapter adapter = new ReviewListAdapter(this);
+        ReviewListAdapter adapter = new ReviewListAdapter(getContext(), this);
         binding.rvReviewsList.setAdapter(adapter);
+
+        // Setting a divider for RecyclerView items
+        try {
+            binding.rvReviewsList.addItemDecoration(new DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL));
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "onViewCreated: ", e);
+        }
 
         // Data part
         ReviewsRepository repository = ReviewsRepository.getInstance();

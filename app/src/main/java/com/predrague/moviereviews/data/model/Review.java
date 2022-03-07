@@ -22,7 +22,8 @@ public class Review implements Parcelable {
     private final String publicationDateString;
     @SerializedName("link")
     private final Link link;
-
+    @SerializedName("multimedia")
+    private Multimedia multimedia;
 
     protected Review(Parcel in) {
         displayTitle = in.readString();
@@ -33,6 +34,7 @@ public class Review implements Parcelable {
         summaryShort = in.readString();
         publicationDateString = in.readString();
         link = in.readParcelable(Link.class.getClassLoader());
+        multimedia = in.readParcelable(Multimedia.class.getClassLoader());
     }
 
     public static final Creator<Review> CREATOR = new Creator<Review>() {
@@ -62,6 +64,7 @@ public class Review implements Parcelable {
         parcel.writeString(summaryShort);
         parcel.writeString(publicationDateString);
         parcel.writeParcelable(link, i);
+        parcel.writeParcelable(multimedia, i);
     }
 
     public String getDisplayTitle() {
@@ -95,6 +98,8 @@ public class Review implements Parcelable {
     public Link getLink() {
         return link;
     }
+
+    public Multimedia getMultimedia() { return multimedia; }
 
 
     @Override

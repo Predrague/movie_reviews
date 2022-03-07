@@ -1,12 +1,18 @@
 package com.predrague.moviereviews.ui.adapters;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.databinding.ReviewListItemBinding;
 import com.predrague.moviereviews.databinding.ReviewListItemCriticsPickBinding;
@@ -20,9 +26,11 @@ public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private List<Review> localDataSet = new ArrayList<>();
     // Item click listener
     private final OnReviewItemClickListener reviewClickListener;
+    private final Context context;
 
-    public ReviewListAdapter(OnReviewItemClickListener reviewClickListener) {
+    public ReviewListAdapter(Context context, OnReviewItemClickListener reviewClickListener) {
         this.reviewClickListener = reviewClickListener;
+        this.context = context;
     }
 
     public void updateLocalDataSet(List<Review> updatedList) {
@@ -107,6 +115,22 @@ public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 date = "-";
             }
             viewHolder.binding.txtDate.setText(date);
+
+            // Setting a background image to critics pick items
+            String imageUrl = reviewItem.getMultimedia().getSrc();
+            Glide.with(context).load(imageUrl).into(new CustomTarget<Drawable>() {
+                @Override
+                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                    resource.setAlpha(140);
+                    viewHolder.binding.getRoot().setBackground(resource);
+                }
+
+                @Override
+                public void onLoadCleared(@Nullable Drawable placeholder) {
+                    // TODO
+                }
+            });
+
         } else {
             RegularPickViewHolder viewHolder = (RegularPickViewHolder) holder;
             viewHolder.binding.txtReviewTitle.setText(reviewItem.getDisplayTitle());

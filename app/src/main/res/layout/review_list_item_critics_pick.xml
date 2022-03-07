@@ -3,18 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="240dp"
-    android:background="@color/teal_700">
+    android:layout_height="240dp">
 
     <TextView
         android:id="@+id/txtReviewTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_m"
-        android:layout_marginLeft="@dimen/spacing_m"
         android:layout_marginTop="@dimen/spacing_l"
         android:layout_marginEnd="@dimen/spacing_xxl"
-        android:layout_marginRight="@dimen/spacing_xxl"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:textSize="18sp"
@@ -31,7 +28,6 @@
         android:layout_marginHorizontal="@dimen/spacing_m"
         android:layout_marginTop="@dimen/spacing_l"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="PG-13" />
@@ -43,7 +39,6 @@
         android:layout_marginHorizontal="@dimen/spacing_m"
         android:layout_marginVertical="@dimen/spacing_m"
         android:ellipsize="end"
-        android:maxLines="2"
         app:layout_constraintBottom_toTopOf="@id/txtAuthor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,6 +66,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="29.05.1991" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
