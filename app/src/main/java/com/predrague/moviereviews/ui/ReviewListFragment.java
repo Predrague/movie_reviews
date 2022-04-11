@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -69,6 +70,19 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
         } catch (IllegalStateException e) {
             Log.e(TAG, "onViewCreated: ", e);
         }
+
+        // More reviews are loaded when list is scrolled to the end
+        // Up to 100 reviews
+        // TODO: Loading indicator
+        binding.rvReviewsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!binding.rvReviewsList.canScrollVertically(1)) {
+                    viewModel.loadReviews();
+                }
+            }
+        });
 
         // Data part
         ReviewsRepository repository = ReviewsRepository.getInstance();

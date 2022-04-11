@@ -22,6 +22,8 @@ public class ReviewsViewModel extends ViewModel {
     }
 
     public void loadReviews() {
+        // TODO: Show a message that maximum reviews count is shown
+        if (repository.getOffset() >= 100) return;
         reviewList = repository.getReviews(BuildConfig.API_KEY);
     }
 
