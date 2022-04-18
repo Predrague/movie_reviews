@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.predrague.moviereviews.R;
 import com.predrague.moviereviews.data.ReviewsRepository;
 import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.databinding.FragmentReviewListBinding;
@@ -87,6 +90,21 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
     // ReviewClickListener interface
     @Override
     public void onReviewItemClick(int position) {
-        Toast.makeText(getContext(), "Clicked item: " + position, Toast.LENGTH_SHORT).show();
+        try {
+            Review review = viewModel.getReview(position);
+
+            FragmentManager fragmentManager = getParentFragmentManager();
+            Bundle bundle = new Bundle();
+            bundle.putString(ReviewDetailFragment.ARG_URL, review.getLink().getUrl());
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.setReorderingAllowed(true);
+            transaction.replace(R.id.main_fragment_container, ReviewDetailFragment.class, bundle, ReviewDetailFragment.TAG);
+            transaction.commit();
+        } catch (Exception e) {
+            Log.e(TAG, "onReviewItemClick: ", e);
+            Toast.makeText(getContext(), getResources().getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+        }
     }
 }

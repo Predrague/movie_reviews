@@ -11,6 +11,7 @@ import com.predrague.moviereviews.data.ReviewsRepository;
 import com.predrague.moviereviews.data.model.Review;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class ReviewsViewModel extends ViewModel {
@@ -29,6 +30,9 @@ public class ReviewsViewModel extends ViewModel {
         return reviewList;
     }
 
+    public Review getReview(int position) throws NullPointerException {
+        return Objects.requireNonNull(reviewList.getValue()).get(position);
+    }
 
     // Factory used to provide repository instance to ViewModel
     public static class ReviewsViewModelFactory implements ViewModelProvider.Factory {

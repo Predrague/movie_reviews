@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Movie Reviews</string>
+    <string name="error_message">Sorry, an error occurred</string>
 </resources>
