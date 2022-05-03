@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Movie Reviews</string>
+    <string name="search_for_reviews">Search for reviews</string>
 </resources>
