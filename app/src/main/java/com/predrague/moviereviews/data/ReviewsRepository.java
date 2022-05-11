@@ -1,32 +1,25 @@
 package com.predrague.moviereviews.data;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
-import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.network.ApiResponse;
 import com.predrague.moviereviews.network.IReviewsApi;
 import com.predrague.moviereviews.network.RetrofitClientInstance;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.predrague.moviereviews.data.interfaces.IReviewListConsumer;
+import com.predrague.moviereviews.data.interfaces.ISearchConsumer;
+import com.predrague.moviereviews.network.ReviewResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-// TODO: Use hasMore field from api response?
 public class ReviewsRepository {
     private static ReviewsRepository instance;
     private final IReviewsApi reviewsApi;
-    private final MutableLiveData<List<Review>> reviews;
-    private int offset = 0;
 
     private ReviewsRepository() {
         reviewsApi = RetrofitClientInstance.getRetrofitInstance().create(IReviewsApi.class);
-        reviews = new MutableLiveData<>();
-        reviews.setValue(new ArrayList<>());
     }
 
     public static synchronized ReviewsRepository getInstance() {
@@ -37,31 +30,57 @@ public class ReviewsRepository {
         return instance;
     }
 
-    // TODO: Some error handling
-    public synchronized MutableLiveData<List<Review>> getReviews(String key) {
+    public synchronized void getReviews(String key, int offset, IReviewListConsumer consumer) {
+        ReviewResponse reviewResponse = new ReviewResponse();
         reviewsApi.getReviews(key, offset).enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
-                if (response.isSuccessful()) {
-                    // Updates current reviews list
-                    ArrayList<Review> valueToUpdate = new ArrayList<>();
-                    valueToUpdate.addAll(reviews.getValue());
-                    valueToUpdate.addAll(response.body().getReviews());
-                    reviews.setValue(valueToUpdate);
-                    offset += 20;
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getNumberOfResults() != 0) {
+                        reviewResponse.setStatus(ReviewResponse.Status.SUCCESS);
+                        reviewResponse.setHasMore(response.body().getHasMore());
+                        reviewResponse.setReviewList(response.body().getReviews());
+                    }
+                    // If number of results is 0 returned object will have Status.EMPTY by default.
+                    // Check ReviewResponse constructor.
+                } else {
+                    reviewResponse.setStatus(ReviewResponse.Status.ERROR);
                 }
+                consumer.consumeReviewListResponse(reviewResponse);
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                reviews.setValue(null);
+                reviewResponse.setStatus(ReviewResponse.Status.ERROR);
+                consumer.consumeReviewListResponse(reviewResponse);
             }
         });
-
-        return reviews;
     }
 
-    public int getOffset() {
-        return offset;
+    public synchronized void searchForReviews(String key, int offset, String query, ISearchConsumer consumer) {
+        ReviewResponse reviewResponse = new ReviewResponse();
+        reviewsApi.searchForReviews(key, offset, query).enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (response.body().getNumberOfResults() != 0) {
+                        reviewResponse.setStatus(ReviewResponse.Status.SUCCESS);
+                        reviewResponse.setHasMore(response.body().getHasMore());
+                        reviewResponse.setReviewList(response.body().getReviews());
+                    }
+                    // If number of results is 0 returned object will have Status.EMPTY by default.
+                    // Check ReviewResponse constructor.
+                } else {
+                    reviewResponse.setStatus(ReviewResponse.Status.ERROR);
+                }
+                consumer.consumeSearchResponse(reviewResponse);
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                reviewResponse.setStatus(ReviewResponse.Status.ERROR);
+                consumer.consumeSearchResponse(reviewResponse);
+            }
+        });
     }
 }

@@ -11,8 +11,22 @@ public class ApiResponse {
     @SerializedName("results")
     @Expose
     private final List<Review> reviews = new ArrayList<>();
+    @SerializedName("num_results")
+    @Expose
+    private int numberOfResults;
+    @SerializedName("has_more")
+    @Expose
+    private boolean hasMore;
 
     public List<Review> getReviews() {
         return reviews;
+    }
+
+    public int getNumberOfResults() {
+        return numberOfResults;
+    }
+
+    public boolean getHasMore() {
+        return hasMore;
     }
 }

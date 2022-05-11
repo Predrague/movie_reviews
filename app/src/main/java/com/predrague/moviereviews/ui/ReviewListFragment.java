@@ -13,14 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.predrague.moviereviews.MainActivity;
+import com.predrague.moviereviews.R;
 import com.predrague.moviereviews.data.ReviewsRepository;
 import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.databinding.FragmentReviewListBinding;
 import com.predrague.moviereviews.ui.adapters.ReviewListAdapter;
+import com.predrague.moviereviews.network.ReviewResponse;
 
 import java.util.List;
 
@@ -43,6 +50,7 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
         }
     }
@@ -78,8 +86,12 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!binding.rvReviewsList.canScrollVertically(1)) {
-                    viewModel.loadReviews();
+                if (!binding.rvReviewsList.canScrollVertically(1) && !viewModel.getLoadingLiveData().getValue()) {
+                    if (viewModel.isSearchInProgress()) {
+                        viewModel.getMoreSearchResults();
+                    } else {
+                        viewModel.getMoreReviews();
+                    }
                 }
             }
         });
@@ -89,11 +101,23 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
         // Idea is to share view model with other fragments (single review item fragment for example).
         viewModel = new ViewModelProvider(requireActivity(), new ReviewsViewModel.ReviewsViewModelFactory(repository)).get(ReviewsViewModel.class);
         viewModel.loadReviews();
-        viewModel.getReviewList().observe(getViewLifecycleOwner(), new Observer<List<Review>>() {
+        viewModel.getReviewListLiveData().observe(getViewLifecycleOwner(), new Observer<List<Review>>() {
             @Override
             public void onChanged(List<Review> reviews) {
                 Log.i(TAG, "onChanged: " + reviews.toString());
                 adapter.updateLocalDataSet(reviews);
+            }
+        });
+
+        // Observe review loading response status and show appropriate messages.
+        viewModel.getResponseStatus().observe(getViewLifecycleOwner(), new Observer<ReviewResponse.Status>() {
+            @Override
+            public void onChanged(ReviewResponse.Status status) {
+                if (status == ReviewResponse.Status.EMPTY) {
+                    // TODO: An empty list layout?
+                } else if (status == ReviewResponse.Status.ERROR) {
+                    Toast.makeText(getContext(), R.string.error_occurred, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -102,5 +126,56 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
     @Override
     public void onReviewItemClick(int position) {
         Toast.makeText(getContext(), "Clicked item: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.options_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.search);
+        SearchView searchView = new SearchView(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
+        searchView.setIconified(false);
+        searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint(getString(R.string.search_for_reviews));
+        
+        item.setActionView(searchView);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                if (!viewModel.getLoadingLiveData().getValue()) {
+                    viewModel.setSearchInProgress(true);
+                    viewModel.setSearchQuery(s);
+                    viewModel.searchForReviews();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (s.isEmpty()) {
+                    viewModel.setSearchInProgress(false);
+                }
+                return true;
+            }
+        });
+
+        // Had to use this because searchView OnCloseListener is not working properly.
+        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                searchView.setQuery("", false);
+                viewModel.setSearchQuery("");
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                viewModel.setSearchInProgress(false);
+                return true;
+            }
+        });
     }
 }
