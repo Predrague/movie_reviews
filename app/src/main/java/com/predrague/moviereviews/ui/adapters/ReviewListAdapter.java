@@ -1,5 +1,7 @@
 package com.predrague.moviereviews.ui.adapters;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +25,13 @@ import java.util.List;
 public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     // Initializing localDataSet to empty ArrayList
     private List<Review> localDataSet = new ArrayList<>();
-    // Item click listener
-    private final OnReviewItemClickListener reviewClickListener;
+    // Item interaction listener
+    private final IReviewInteractionListener reviewClickListener;
     private final Context context;
 
-    public ReviewListAdapter(Context context, OnReviewItemClickListener reviewClickListener) {
+    static final long MENU_ANIMATION_DURATION = 4000;
+
+    public ReviewListAdapter(Context context, IReviewInteractionListener reviewClickListener) {
         this.reviewClickListener = reviewClickListener;
         this.context = context;
     }
@@ -39,42 +43,104 @@ public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     // Regular reviews
-    public static class RegularPickViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class RegularPickViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private final ReviewListItemBinding binding;
-        OnReviewItemClickListener reviewClickListener;
+        IReviewInteractionListener reviewClickListener;
 
-        public RegularPickViewHolder(@NonNull ReviewListItemBinding binding, OnReviewItemClickListener reviewClickListener) {
+        public RegularPickViewHolder(@NonNull ReviewListItemBinding binding, IReviewInteractionListener reviewClickListener) {
             super(binding.getRoot());
             this.binding = binding;
             this.reviewClickListener = reviewClickListener;
 
             // When a list item is clicked ViewHolder's onClick method is called
             this.binding.getRoot().setOnClickListener(this);
+
+            // Long click calls ViewHolders' showMenu() method to show menu with remove button.
+            this.binding.getRoot().setOnLongClickListener(this);
+            this.binding.btnRemoveItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    reviewClickListener.onReviewItemLongPress(getAdapterPosition());
+                }
+            });
         }
 
         @Override
         public void onClick(View view) {
             reviewClickListener.onReviewItemClick(getAdapterPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            showMenu();
+            return true;
+        }
+
+        private void showMenu() {
+            binding.reviewItemMenu.setVisibility(View.VISIBLE);
+            binding.reviewItemMenu.setAlpha(1f);
+
+            // Animating menu to disappear after short time.
+            binding.reviewItemMenu.animate()
+                    .setStartDelay(MENU_ANIMATION_DURATION)
+                    .alpha(0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            binding.reviewItemMenu.setVisibility(View.GONE);
+                        }
+                    });
         }
     }
 
     // Critic pick reviews
-    public static class CriticsPickViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class CriticsPickViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         private final ReviewListItemCriticsPickBinding binding;
-        OnReviewItemClickListener reviewClickListener;
+        IReviewInteractionListener reviewClickListener;
 
-        public CriticsPickViewHolder(@NonNull ReviewListItemCriticsPickBinding binding, OnReviewItemClickListener reviewClickListener) {
+        public CriticsPickViewHolder(@NonNull ReviewListItemCriticsPickBinding binding, IReviewInteractionListener reviewClickListener) {
             super(binding.getRoot());
             this.binding = binding;
             this.reviewClickListener = reviewClickListener;
 
             // When a list item is clicked ViewHolder's onClick method is called
             this.binding.getRoot().setOnClickListener(this);
+
+            // Long click calls ViewHolders' showMenu() method to show menu with remove button.
+            this.binding.getRoot().setOnLongClickListener(this);
+            this.binding.btnRemoveItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    reviewClickListener.onReviewItemLongPress(getAdapterPosition());
+                }
+            });
         }
 
         @Override
         public void onClick(View view) {
             reviewClickListener.onReviewItemClick(getAdapterPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            showMenu();
+            return true;
+        }
+
+        private void showMenu() {
+            binding.reviewItemMenu.setVisibility(View.VISIBLE);
+            binding.reviewItemMenu.setAlpha(1f);
+
+            // Animating menu to disappear after short time.
+            binding.reviewItemMenu.animate()
+                    .setStartDelay(MENU_ANIMATION_DURATION)
+                    .alpha(0f)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            binding.reviewItemMenu.setVisibility(View.GONE);
+                        }
+                    });
         }
     }
 
@@ -154,7 +220,8 @@ public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     // On click listener interface
     // Needs to be implemented in View which uses this adapter
-    public interface OnReviewItemClickListener {
+    public interface IReviewInteractionListener {
         void onReviewItemClick(int position);
+        void onReviewItemLongPress(int position);
     }
 }

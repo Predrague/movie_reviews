@@ -33,7 +33,7 @@ import com.predrague.moviereviews.network.ReviewResponse;
 
 import java.util.List;
 
-public class ReviewListFragment extends Fragment implements ReviewListAdapter.OnReviewItemClickListener {
+public class ReviewListFragment extends Fragment implements ReviewListAdapter.IReviewInteractionListener {
     private static final String TAG = "ReviewListFragment";
     private FragmentReviewListBinding binding;
     private ReviewsViewModel viewModel;
@@ -151,6 +151,11 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
             Log.e(TAG, "onReviewItemClick: ", e);
             Toast.makeText(getContext(), getResources().getString(R.string.error_occurred), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onReviewItemLongPress(int position) {
+        viewModel.removeItem(position);
     }
 
     @Override

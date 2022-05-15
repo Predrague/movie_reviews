@@ -73,4 +73,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="29.05.1991" />
 
+
+    <RelativeLayout
+        android:id="@+id/reviewItemMenu"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="?attr/colorControlActivated"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnRemoveItem"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@null"
+            android:src="@drawable/ic_delete_item" />
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
