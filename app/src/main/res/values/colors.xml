@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="review_light_green">#bcf54c</color>
+    <color name="review_dark_green">#043602</color>
+    <color name="review_gold">#f5bf42</color>
 </resources>

@@ -1,18 +1,17 @@
 package com.predrague.moviereviews.ui.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.predrague.moviereviews.R;
 import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.databinding.ReviewListItemBinding;
 import com.predrague.moviereviews.databinding.ReviewListItemCriticsPickBinding;
@@ -117,19 +116,15 @@ public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolder.binding.txtDate.setText(date);
 
             // Setting a background image to critics pick items
-            String imageUrl = reviewItem.getMultimedia().getSrc();
-            Glide.with(context).load(imageUrl).into(new CustomTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                    resource.setAlpha(140);
-                    viewHolder.binding.getRoot().setBackground(resource);
-                }
-
-                @Override
-                public void onLoadCleared(@Nullable Drawable placeholder) {
-                    // TODO
-                }
-            });
+            try {
+                String imageUrl = reviewItem.getMultimedia().getSrc();
+                Glide.with(context).load(imageUrl).into(viewHolder.binding.imgCriticsReviewIcon);
+                viewHolder.binding.imgCriticsReviewIcon.setScaleType(ImageView.ScaleType.FIT_XY);
+            } catch (Exception e) {
+                // If an error occurs or there is no multimedia for a review there is default image.
+                Glide.with(context).load(AppCompatResources.getDrawable(context, R.drawable.crittics_review_background)).into(viewHolder.binding.imgCriticsReviewIcon);
+                viewHolder.binding.imgCriticsReviewIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            }
 
         } else {
             RegularPickViewHolder viewHolder = (RegularPickViewHolder) holder;

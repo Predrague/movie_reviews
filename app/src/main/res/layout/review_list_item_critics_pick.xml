@@ -5,6 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="240dp">
 
+    <ImageView
+        android:id="@+id/imgCriticsReviewIcon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5" />
+
     <TextView
         android:id="@+id/txtReviewTitle"
         android:layout_width="0dp"
