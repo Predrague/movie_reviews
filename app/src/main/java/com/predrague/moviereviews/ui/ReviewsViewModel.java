@@ -15,6 +15,7 @@ import com.predrague.moviereviews.network.ReviewResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ReviewsViewModel extends ViewModel implements IReviewListConsumer, ISearchConsumer {
@@ -70,6 +71,10 @@ public class ReviewsViewModel extends ViewModel implements IReviewListConsumer, 
 
     public LiveData<List<Review>> getReviewListLiveData() {
         return reviewListLiveData;
+    }
+
+    public Review getReview(int position) throws NullPointerException {
+        return Objects.requireNonNull(reviewListLiveData.getValue()).get(position);
     }
 
     public boolean isSearchInProgress() {
