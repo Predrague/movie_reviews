@@ -83,7 +83,6 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
 
         // More reviews are loaded when list is scrolled to the end
         // Up to 100 reviews
-        // TODO: Loading indicator
         binding.rvReviewsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -108,6 +107,15 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.On
             public void onChanged(List<Review> reviews) {
                 Log.i(TAG, "onChanged: " + reviews.toString());
                 adapter.updateLocalDataSet(reviews);
+            }
+        });
+
+        // Progress bar - loading indicator
+        viewModel.getLoadingLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean loading) {
+                int visibility = (Boolean.TRUE.equals(loading) ? View.VISIBLE : View.INVISIBLE);
+                binding.progressBar.setVisibility(visibility);
             }
         });
 
