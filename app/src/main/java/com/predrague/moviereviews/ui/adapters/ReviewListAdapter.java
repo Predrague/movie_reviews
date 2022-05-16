@@ -188,7 +188,7 @@ public class ReviewListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 viewHolder.binding.imgCriticsReviewIcon.setScaleType(ImageView.ScaleType.FIT_XY);
             } catch (Exception e) {
                 // If an error occurs or there is no multimedia for a review there is default image.
-                Glide.with(context).load(AppCompatResources.getDrawable(context, R.drawable.crittics_review_background)).into(viewHolder.binding.imgCriticsReviewIcon);
+                Glide.with(context).load(AppCompatResources.getDrawable(context, R.drawable.critics_review_background)).into(viewHolder.binding.imgCriticsReviewIcon);
                 viewHolder.binding.imgCriticsReviewIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
             }
 
