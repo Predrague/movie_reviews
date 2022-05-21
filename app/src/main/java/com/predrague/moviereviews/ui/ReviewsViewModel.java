@@ -42,6 +42,7 @@ public class ReviewsViewModel extends ViewModel implements IReviewListConsumer, 
 
     public ReviewsViewModel(ReviewsRepository repository) {
         this.repository = repository;
+        loadReviews();
     }
 
     public void loadReviews() {

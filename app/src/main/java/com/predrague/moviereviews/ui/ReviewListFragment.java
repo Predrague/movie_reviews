@@ -101,7 +101,6 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.IR
         ReviewsRepository repository = ReviewsRepository.getInstance();
         // Idea is to share view model with other fragments (single review item fragment for example).
         viewModel = new ViewModelProvider(requireActivity(), new ReviewsViewModel.ReviewsViewModelFactory(repository)).get(ReviewsViewModel.class);
-        viewModel.loadReviews();
         viewModel.getReviewListLiveData().observe(getViewLifecycleOwner(), new Observer<List<Review>>() {
             @Override
             public void onChanged(List<Review> reviews) {
