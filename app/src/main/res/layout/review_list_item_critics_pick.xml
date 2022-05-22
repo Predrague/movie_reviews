@@ -45,6 +45,7 @@
         android:layout_marginHorizontal="@dimen/spacing_m"
         android:layout_marginVertical="@dimen/spacing_m"
         android:ellipsize="end"
+        android:maxLines="8"
         app:layout_constraintBottom_toTopOf="@id/txtAuthor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,11 +78,13 @@
     <RelativeLayout
         android:id="@+id/reviewItemMenu"
         android:layout_width="60dp"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
         android:layout_gravity="end"
-        android:background="?attr/colorControlActivated"
+        android:layout_marginEnd="@dimen/spacing_m"
+        android:background="@drawable/item_remove_layout"
         android:gravity="center"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
