@@ -52,7 +52,6 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.IR
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
         if (getArguments() != null) {
         }
     }

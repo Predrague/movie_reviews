@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -34,6 +35,7 @@ public class ReviewDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             url = getArguments().getString(ARG_URL);
         }
@@ -50,5 +52,11 @@ public class ReviewDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.webViewReviewDetails.getSettings().setJavaScriptEnabled(false);
         binding.webViewReviewDetails.loadUrl(url);
+    }
+
+    // Removing search functionality from details fragment
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        menu.clear();
     }
 }
