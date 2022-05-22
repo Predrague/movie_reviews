@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,6 +84,18 @@ public class ReviewSearchFragment extends Fragment implements ReviewSearchRecycl
             public void onChanged(List<Review> reviews) {
                 Log.i(TAG, "onChanged: " + reviews.toString());
                 adapter.updateLocalDataSet(reviews);
+            }
+        });
+
+        // More reviews are loaded when list is scrolled to the end
+        // Up to 100 reviews
+        binding.rvSearchList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!binding.rvSearchList.canScrollVertically(1) && !viewModel.getLoadingLiveData().getValue()) {
+                    viewModel.getMoreSearchResults();
+                }
             }
         });
 
