@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -50,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
         NetworkStateManager.getInstance().getNetworkConnectivityStatus().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                // TODO make UI for network connection status
-                Toast.makeText(getBaseContext(), Boolean.TRUE.equals(aBoolean) ? "There is internet connection \\o/" : "There is no internet connection :( ", Toast.LENGTH_SHORT).show();
+                if (!aBoolean)
+                    binding.connectionIndicator.setVisibility(View.VISIBLE);
+                else binding.connectionIndicator.setVisibility(View.GONE);
             }
         });
     }

@@ -25,6 +25,7 @@ import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.databinding.FragmentSearchListBinding;
 import com.predrague.moviereviews.network.ReviewResponse;
 import com.predrague.moviereviews.ui.adapters.ReviewSearchRecyclerViewAdapter;
+import com.predrague.moviereviews.util.network.NetworkStateManager;
 
 import java.util.List;
 
@@ -140,6 +141,10 @@ public class ReviewSearchFragment extends Fragment implements ReviewSearchRecycl
     @Override
     public void onItemClick(int position) {
         try {
+            if (NetworkStateManager.getInstance().getNetworkConnectivityStatus().getValue() == false) {
+                return;
+            }
+
             Review review = viewModel.getReviewFromSearch(position);
 
             FragmentManager fragmentManager = getParentFragmentManager();

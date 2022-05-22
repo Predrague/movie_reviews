@@ -30,6 +30,7 @@ import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.databinding.FragmentReviewListBinding;
 import com.predrague.moviereviews.ui.adapters.ReviewListAdapter;
 import com.predrague.moviereviews.network.ReviewResponse;
+import com.predrague.moviereviews.util.network.NetworkStateManager;
 
 import java.util.List;
 
@@ -130,6 +131,10 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.IR
     @Override
     public void onReviewItemClick(int position) {
         try {
+            if (NetworkStateManager.getInstance().getNetworkConnectivityStatus().getValue() == false) {
+                return;
+            }
+
             Review review = viewModel.getReview(position);
 
             FragmentManager fragmentManager = getParentFragmentManager();

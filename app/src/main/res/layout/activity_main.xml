@@ -22,4 +22,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appToolbar" />
 
+    <RelativeLayout
+        android:id="@+id/connectionIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_s"
+        android:background="@drawable/item_remove_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="@dimen/spacing_s"
+            android:text="There is no internet connection!"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
