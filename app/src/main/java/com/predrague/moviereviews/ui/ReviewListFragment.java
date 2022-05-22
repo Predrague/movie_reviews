@@ -88,11 +88,7 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.IR
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (!binding.rvReviewsList.canScrollVertically(1) && !viewModel.getLoadingLiveData().getValue()) {
-                    if (viewModel.isSearchInProgress()) {
-                        viewModel.getMoreSearchResults();
-                    } else {
-                        viewModel.getMoreReviews();
-                    }
+                    viewModel.getMoreReviews();
                 }
             }
         });
@@ -155,56 +151,5 @@ public class ReviewListFragment extends Fragment implements ReviewListAdapter.IR
     @Override
     public void onReviewItemLongPress(int position) {
         viewModel.removeItem(position);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.options_menu, menu);
-
-        MenuItem item = menu.findItem(R.id.search);
-        SearchView searchView = new SearchView(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
-        searchView.setIconified(false);
-        searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint(getString(R.string.search_for_reviews));
-        
-        item.setActionView(searchView);
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                if (!viewModel.getLoadingLiveData().getValue()) {
-                    viewModel.setSearchInProgress(true);
-                    viewModel.setSearchQuery(s);
-                    viewModel.searchForReviews();
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                if (s.isEmpty()) {
-                    viewModel.setSearchInProgress(false);
-                }
-                return true;
-            }
-        });
-
-        // Had to use this because searchView OnCloseListener is not working properly.
-        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem menuItem) {
-                searchView.setQuery("", false);
-                viewModel.setSearchQuery("");
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
-                viewModel.setSearchInProgress(false);
-                return true;
-            }
-        });
     }
 }

@@ -21,6 +21,7 @@ import java.util.Objects;
 public class ReviewsViewModel extends ViewModel implements IReviewListConsumer, ISearchConsumer {
     private final ReviewsRepository repository;
     private final MutableLiveData<List<Review>> reviewListLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<Review>> reviewListSearchLiveData = new MutableLiveData<>();
 
     // Review list
     private final List<Review> reviews = new ArrayList<>();
@@ -35,14 +36,12 @@ public class ReviewsViewModel extends ViewModel implements IReviewListConsumer, 
 
     // Latest response status, useful for UI changes
     private final MutableLiveData<ReviewResponse.Status> responseStatus = new MutableLiveData<>(ReviewResponse.Status.EMPTY);
-    
+
     // Loading LiveData tells us if loading is currently in progress.
-    // TODO: Try to make fragment use this to show loading indicator. If it is not useful it can be replaced with simple boolean.
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>(false);
 
     public ReviewsViewModel(ReviewsRepository repository) {
         this.repository = repository;
-        loadReviews();
     }
 
     public void loadReviews() {
@@ -72,6 +71,10 @@ public class ReviewsViewModel extends ViewModel implements IReviewListConsumer, 
 
     public LiveData<List<Review>> getReviewListLiveData() {
         return reviewListLiveData;
+    }
+
+    public LiveData<List<Review>> getReviewListSearchLiveData() {
+        return reviewListSearchLiveData;
     }
 
     public Review getReview(int position) throws NullPointerException {
@@ -122,10 +125,11 @@ public class ReviewsViewModel extends ViewModel implements IReviewListConsumer, 
         responseStatus.setValue(response.getStatus());
         if (response.getStatus() == ReviewResponse.Status.SUCCESS) {
             reviewsSearch.addAll(response.getReviewList());
-            reviewListLiveData.setValue(reviewsSearch);
+            reviewListSearchLiveData.setValue(reviewsSearch);
             if (response.isHasMore()) {
                 searchOffset += 20;
-            } else searchOffset += 101;     // This way search for more results will not be requested anymore.
+            } else
+                searchOffset += 101;     // This way search for more results will not be requested anymore.
         }
         loadingLiveData.setValue(false);
     }
