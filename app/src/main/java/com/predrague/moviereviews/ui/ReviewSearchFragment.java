@@ -40,6 +40,7 @@ public class ReviewSearchFragment extends Fragment implements ReviewSearchRecycl
     public ReviewSearchFragment() {
     }
 
+    // TODO: Remove unused code
     public static ReviewSearchFragment newInstance(int columnCount) {
         ReviewSearchFragment fragment = new ReviewSearchFragment();
         Bundle args = new Bundle();

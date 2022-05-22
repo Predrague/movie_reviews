@@ -3,4 +3,8 @@
     <string name="search_for_reviews">Search for reviews</string>
     <string name="error_occurred">Sorry, an error occurred</string>
     <string name="no_results_for_selected_query">No results for selected query</string>
+    <string name="about">About</string>
+    <string name="click_logo_for_terms_of_use">*click logo for terms of use*</string>
+    <string name="data_provided_by_new_york_times_api">Data provided by New York Times API:</string>
+    <string name="showcase_app_for_movie_reviews">Showcase app for movie reviews.</string>
 </resources>

@@ -11,10 +11,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.predrague.moviereviews.data.ReviewsRepository;
 import com.predrague.moviereviews.databinding.ActivityMainBinding;
+import com.predrague.moviereviews.ui.AboutFragment;
 import com.predrague.moviereviews.ui.ReviewSearchFragment;
 import com.predrague.moviereviews.ui.ReviewsViewModel;
 import com.predrague.moviereviews.util.network.NetworkConnectionUtil;
@@ -33,6 +33,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Toolbar
         setSupportActionBar(binding.appToolbar);
+        // Since the app don't have navigation drawer we will use it to show about dialog.
+        binding.appToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // About dialog fragment
+                AboutFragment.newInstance().show(getSupportFragmentManager(), AboutFragment.TAG);
+            }
+        });
 
         // View model
         ReviewsRepository reviewsRepository = ReviewsRepository.getInstance();
@@ -51,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
         NetworkStateManager.getInstance().getNetworkConnectivityStatus().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if (!aBoolean)
-                    binding.connectionIndicator.setVisibility(View.VISIBLE);
+                if (!aBoolean) binding.connectionIndicator.setVisibility(View.VISIBLE);
                 else binding.connectionIndicator.setVisibility(View.GONE);
             }
         });
