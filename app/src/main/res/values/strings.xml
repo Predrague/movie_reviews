@@ -2,4 +2,5 @@
     <string name="app_name">Movie Reviews</string>
     <string name="search_for_reviews">Search for reviews</string>
     <string name="error_occurred">Sorry, an error occurred</string>
+    <string name="no_results_for_selected_query">No results for selected query</string>
 </resources>

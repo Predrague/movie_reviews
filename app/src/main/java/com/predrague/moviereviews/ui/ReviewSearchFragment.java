@@ -23,6 +23,7 @@ import com.predrague.moviereviews.R;
 import com.predrague.moviereviews.data.ReviewsRepository;
 import com.predrague.moviereviews.data.model.Review;
 import com.predrague.moviereviews.databinding.FragmentSearchListBinding;
+import com.predrague.moviereviews.network.ReviewResponse;
 import com.predrague.moviereviews.ui.adapters.ReviewSearchRecyclerViewAdapter;
 
 import java.util.List;
@@ -105,6 +106,21 @@ public class ReviewSearchFragment extends Fragment implements ReviewSearchRecycl
             public void onChanged(Boolean loading) {
                 int visibility = (Boolean.TRUE.equals(loading) ? View.VISIBLE : View.INVISIBLE);
                 binding.progressBarSearch.setVisibility(visibility);
+            }
+        });
+
+        viewModel.getResponseStatus().observe(getViewLifecycleOwner(), new Observer<ReviewResponse.Status>() {
+            @Override
+            public void onChanged(ReviewResponse.Status status) {
+                if (status == ReviewResponse.Status.EMPTY) {
+                    binding.rvSearchList.setVisibility(View.GONE);
+                    binding.emptyListView.setVisibility(View.VISIBLE);
+                } else if (status == ReviewResponse.Status.SUCCESS) {
+                    binding.rvSearchList.setVisibility(View.VISIBLE);
+                    binding.emptyListView.setVisibility(View.GONE);
+                } else if (status == ReviewResponse.Status.ERROR) {
+                    Toast.makeText(getContext(), R.string.error_occurred, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
