@@ -3,6 +3,7 @@ package com.predrague.moviereviews.ui.adapters;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.predrague.moviereviews.data.model.Review;
@@ -14,6 +15,11 @@ import java.util.List;
 
 public class ReviewSearchRecyclerViewAdapter extends RecyclerView.Adapter<ReviewSearchRecyclerViewAdapter.ViewHolder> {
     private List<Review> reviews = new ArrayList<Review>();
+    private IReviewSearchListClickListener listener;
+
+    public ReviewSearchRecyclerViewAdapter(IReviewSearchListClickListener listener) {
+        this.listener = listener;
+    }
 
     public void updateLocalDataSet(List<Review> updatedList) {
         this.reviews = updatedList;
@@ -23,7 +29,7 @@ public class ReviewSearchRecyclerViewAdapter extends RecyclerView.Adapter<Review
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(ReviewSearchItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(ReviewSearchItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false), listener);
     }
 
     @Override
@@ -50,12 +56,25 @@ public class ReviewSearchRecyclerViewAdapter extends RecyclerView.Adapter<Review
         return reviews.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ReviewSearchItemBinding binding;
+        IReviewSearchListClickListener clickListener;
 
-        public ViewHolder(ReviewSearchItemBinding binding) {
+        public ViewHolder(ReviewSearchItemBinding binding, IReviewSearchListClickListener clickListener) {
             super(binding.getRoot());
             this.binding = binding;
+            this.clickListener = clickListener;
+
+            this.binding.getRoot().setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            clickListener.onItemClick(getAdapterPosition());
+        }
+    }
+
+    public interface IReviewSearchListClickListener {
+        void onItemClick(int position);
     }
 }

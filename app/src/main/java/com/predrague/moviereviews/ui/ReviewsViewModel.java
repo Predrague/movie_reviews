@@ -81,6 +81,10 @@ public class ReviewsViewModel extends ViewModel implements IReviewListConsumer, 
         return Objects.requireNonNull(reviewListLiveData.getValue()).get(position);
     }
 
+    public Review getReviewFromSearch(int position) throws NullPointerException {
+        return Objects.requireNonNull(reviewListSearchLiveData.getValue()).get(position);
+    }
+
     public void removeItem(int position) {
         reviews.remove(position);
         reviewListLiveData.setValue(reviews);
