@@ -57,7 +57,7 @@ public class RetrofitClientInstance {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request();
-                if (!NetworkStateManager.getInstance().getNetworkConnectivityStatus().getValue()) {
+                if (Boolean.FALSE.equals(NetworkStateManager.getInstance().getNetworkConnectivityStatus().getValue())) {
                     int maxStale = 60 * 60 * 24 * 30; // Offline cache available for 30 days.
                     request = request.newBuilder()
                             .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
